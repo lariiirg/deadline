@@ -1,0 +1,14 @@
+{
+  "name": "deadline-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write \"app/**/*.{js,json,md}\" \"backend/**/*.{js,json}\" \"tests/**/*.js\" \"scripts/*.cjs\" \"*.{js,json,md}\" --ignore-path .gitignore",
+    "test:web": "playwright test",
+    "test:api": "npm --prefix backend test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "prettier": "^3.6.2"
+  }
+}

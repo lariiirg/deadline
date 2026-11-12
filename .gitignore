@@ -1,0 +1,10 @@
+node_modules/
+.env
+.expo/
+dist/
+dist-android/
+dist-ios/
+*.log
+test-results/
+playwright-report/
+artifacts/

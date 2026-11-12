@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Deadline",
+    "slug": "deadline",
+    "version": "1.0.0",
+    "scheme": "deadline",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "web": {
+      "bundler": "metro",
+      "name": "Deadline"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.deadline.school"
+    },
+    "android": {
+      "package": "com.deadline.school"
+    },
+    "plugins": ["expo-status-bar"]
+  }
+}

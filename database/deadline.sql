@@ -1,0 +1,50 @@
+CREATE DATABASE IF NOT EXISTS deadline CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE deadline;
+CREATE TABLE IF NOT EXISTS users (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(120) NOT NULL,
+ email VARCHAR(190) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NOT NULL,
+ account_type ENUM('aluno','professor') NOT NULL DEFAULT 'aluno',
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS projects (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ owner_id INT UNSIGNED NOT NULL,
+ name VARCHAR(150) NOT NULL,
+ subject VARCHAR(100) NOT NULL,
+ topic VARCHAR(200) NOT NULL DEFAULT '',
+ description TEXT NOT NULL,
+ due_date DATE NOT NULL,
+ status ENUM('pendente','em andamento','concluído') NOT NULL DEFAULT 'pendente',
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (owner_id) REFERENCES users(id),
+ INDEX (due_date)
+);
+CREATE TABLE IF NOT EXISTS project_members (
+ project_id INT UNSIGNED NOT NULL,
+ user_id INT UNSIGNED NOT NULL,
+ joined_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (project_id,user_id),
+ FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+ FOREIGN KEY (user_id) REFERENCES users(id)
+);
+CREATE TABLE IF NOT EXISTS invitations (
+ code CHAR(16) CHARACTER SET ascii COLLATE ascii_bin PRIMARY KEY,
+ project_id INT UNSIGNED NOT NULL UNIQUE,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS tasks (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ project_id INT UNSIGNED NOT NULL,
+ title VARCHAR(150) NOT NULL,
+ description TEXT NOT NULL,
+ assignee_id INT UNSIGNED NULL,
+ due_date DATE NOT NULL,
+ status ENUM('pendente','em andamento','concluída') NOT NULL DEFAULT 'pendente',
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+ FOREIGN KEY (project_id,assignee_id) REFERENCES project_members(project_id,user_id) ON DELETE CASCADE,
+ INDEX (due_date)
+);
