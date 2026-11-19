@@ -49,13 +49,17 @@ Mostre os commits existentes sem afirmar que cada etapa foi um commit separado s
 
 ## 5. APK e Android
 
+**Situação atual em 19/11/2026:** o APK foi gerado pelo EAS com status FINISHED, build `85432b3e-2579-40e4-9a2e-bf72d1a6ebfa`, código do commit `d57b82c`. [Download oficial](https://expo.dev/artifacts/eas/9H-35B1CoZ6l20w30OOMbtlnPIFi2VjPDsYsiuk1PWU.apk). A instalação ainda não foi testada porque não há aparelho Android ou emulador disponível.
+
+Enquanto a instalação não for feita, dizer: “O APK já foi gerado na nuvem pelo EAS. Eu tenho o arquivo instalável, mas ainda não testei em um Android. Os testes com navegador, API e banco passaram; o teste no aparelho está marcado como pendente.” Não use a fala de versão instalada abaixo até realmente testá-la.
+
 Se o build **ainda estiver pendente**, dizer: “Configurei o EAS com um perfil que gera APK e um endereço de API da rede local. A geração e a instalação ainda dependem das etapas marcadas no checklist. Não estou apresentando um bundle JavaScript como se fosse um APK.”
 
 Se o APK **tiver sido gerado e testado**, preencher antes de apresentar:
 
-- ID/link do build: ____________________
-- Commit do código enviado ao build: ____________________
-- SHA-256 do APK: ____________________
+- ID/link do build: `85432b3e-2579-40e4-9a2e-bf72d1a6ebfa` (link em `ENTREGA_4.md`).
+- Commit do código enviado ao build: `d57b82c8b36483db57bb7222e4acfa27d9a598fd`.
+- SHA-256 do APK: `A44974B5666179F672391ECE02E6E08F0A2D8A5114C622E9692F7D65CAA529E5`.
 - Celular e versão do Android: ____________________
 - Data do teste: ____________________
 

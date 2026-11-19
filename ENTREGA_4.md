@@ -4,7 +4,9 @@
 
 A mesma aplicação Deadline foi revisada, sem recriar telas, trocar a navegação, alterar o esquema do MySQL ou remover funcionalidades. O banco de desenvolvimento continua em 3307 e a API em 3000. Os testes de interface desta etapa usaram uma API temporária em 3001 para não encerrar a API de desenvolvimento.
 
-**O APK ainda não existe.** O perfil EAS está preparado, mas `eas whoami` retornou `Not logged in`. Não há Android SDK/ADB ou dispositivo configurado neste ambiente para instalação. O login na conta Expo deve ser feito pela proprietária, sem compartilhar senha. Depois é necessário vincular o projeto, gerar e baixar o APK e testar no celular.
+**O APK foi gerado com sucesso pelo EAS.** Após o login da proprietária, o projeto foi vinculado à conta `lariigewehr`, ID `26b7f765-eefa-49f1-8a50-ea2c13d66904`. O build `85432b3e-2579-40e4-9a2e-bf72d1a6ebfa` terminou com status `FINISHED`, perfil `apk-lan`, versão 1.0.0 e versionCode 1, a partir do commit `d57b82c8b36483db57bb7222e4acfa27d9a598fd`. A chave de assinatura é gerenciada remotamente pelo EAS.
+
+**Instalação e execução nativa continuam pendentes.** A proprietária informou não ter aparelho Android, e não há SDK/ADB ou emulador configurado neste ambiente. O teste de acesso à API pelo celular também não foi executado; a ausência do teste não comprova falha de rede. O README explica a alternativa de emulador.
 
 ## Alterações necessárias feitas
 
@@ -35,9 +37,11 @@ A mesma aplicação Deadline foi revisada, sem recriar telas, trocar a navegaç�
 | Introspecção Expo do perfil apk-lan | Concluída | Manifest gerado contém `android:usesCleartextTraffic=true`; sem gerar projeto Android na pasta. |
 | `npm.cmd audit --omit=dev` no backend | 0 vulnerabilidades reportadas | Dependências de execução na data da consulta. |
 | `npm.cmd audit --json` no app | 3 ocorrências moderadas; 0 altas/críticas | Cadeia Expo/fingerprint/minimatch. Sem downgrade forçado do SDK. |
-| `eas whoami` | `Not logged in` | Build EAS depende de login da proprietária. |
+| Login e vinculação EAS | Concluídos após ação da proprietária | Projeto real vinculado em `app/app.json`. |
+| EAS Build Android `apk-lan` | **FINISHED** | APK 1.0.0, versionCode 1, build `85432b3e-2579-40e4-9a2e-bf72d1a6ebfa`. |
+| Download e conferência do APK | Concluídos | 79.303.715 bytes; ZIP válido com AndroidManifest binário, classes.dex, bundle embarcado e URL `http://10.1.134.84:3000/api` confirmada no próprio bundle. Não equivale a instalação. |
 | Revisão de segredos nos arquivos candidatos ao commit | Nenhuma credencial privada atual encontrada; nenhum `.env` incluído | Verificação local sem imprimir os valores privados. |
-| Instalação APK / execução nativa | Não executadas | Sem APK e sem Android disponível. |
+| Instalação APK / execução nativa | Não executadas | APK disponível; sem aparelho Android ou emulador configurado. |
 
 As primeiras tentativas de teste/compilação limitadas pelo sandbox foram repetidas com a execução permitida. O cache do Metro foi reconstruído durante a exportação Android. Não foram contadas tentativas com falha como aprovações.
 
@@ -84,12 +88,15 @@ Itens marcados abaixo se referem à evidência web/API documentada; não signifi
 - [x] README, SQL e material de apresentação disponíveis.
 - [x] Configuração EAS para APK e bundle Android compilado.
 - [ ] Commit final enviado e conferido no GitHub.
-- [ ] APK realmente gerado e baixado.
-- [ ] APK correspondente ao commit final identificado.
+- [x] APK realmente gerado pelo EAS.
+- [x] APK baixado e conferido localmente quanto a estrutura, bundle, URL e SHA-256.
+- [x] Código do APK identificado: commit `d57b82c`.
 - [ ] APK instalado e navegação Android testada.
 - [ ] API acessada pelo celular físico.
 
-## Próximas ações da proprietária para o APK
+## Como repetir o build e concluir a instalação
+
+Login, vinculação e geração já foram realizados. As etapas 1 a 5 abaixo servem para repetir o build em outra máquina ou após uma correção; não é necessário gerar outro APK apenas para baixá-lo. Use o link do artefato concluído abaixo. A instalação e os testes das etapas 6 e 7 continuam pendentes.
 
 1. Em `app`, executar `npx.cmd eas-cli@latest login` diretamente no terminal e avisar quando concluir. Nunca compartilhar senha.
 2. Vincular a conta/projeto com `npx.cmd eas-cli@latest init` e registrar o ID real em `expo.extra.eas.projectId` caso a CLI peça ajuste manual na configuração dinâmica.
@@ -101,10 +108,11 @@ Itens marcados abaixo se referem à evidência web/API documentada; não signifi
 
 ### Identificação do artefato (preencher somente quando existir)
 
-- Commit usado no build: **pendente**.
-- ID/link EAS: **pendente**.
-- Caminho/link do APK: **pendente**.
-- SHA-256: **pendente** (`Get-FileHash -Algorithm SHA256 -LiteralPath CAMINHO_DO_APK`).
+- Commit usado no build: `d57b82c8b36483db57bb7222e4acfa27d9a598fd`.
+- ID/link EAS: [85432b3e-2579-40e4-9a2e-bf72d1a6ebfa](https://expo.dev/accounts/lariigewehr/projects/deadline/builds/85432b3e-2579-40e4-9a2e-bf72d1a6ebfa).
+- Link do APK: [Download oficial no EAS](https://expo.dev/artifacts/eas/9H-35B1CoZ6l20w30OOMbtlnPIFi2VjPDsYsiuk1PWU.apk).
+- Caminho local: `artifacts/Deadline-1.0.0.apk` (79.303.715 bytes).
+- SHA-256: `A44974B5666179F672391ECE02E6E08F0A2D8A5114C622E9692F7D65CAA529E5`.
 - Data, aparelho e versão Android: **pendentes**.
 
 ### Checklist no APK instalado
@@ -130,4 +138,4 @@ Itens marcados abaixo se referem à evidência web/API documentada; não signifi
 
 Remote existente: `https://github.com/lariiirg/deadline.git`, nome local `origen`, branch `main`. Nenhum force push ou reescrita de histórico faz parte desta entrega. Arquivos .env, dependências, artefatos, APK e chaves privadas estão excluídos. O `.easignore` também exclui backend e banco do envio para a compilação do cliente.
 
-Os arquivos SQL reais permanecem disponíveis em `database/`. O commit local deve descrever as configurações e testes preparados, sem alegar que existe APK. O push final e sua conferência devem ocorrer depois da revisão autorizada. Os resultados antigos estão em `VALIDACAO.md`; esta página é a referência atual para a Entrega 4.
+Os arquivos SQL reais permanecem disponíveis em `database/`. O commit `d57b82c` identifica o código enviado ao EAS; commits posteriores que apenas registram resultados e documentação não alteram o executável. O push final e sua conferência dependem da confirmação de envio. Os resultados antigos estão em `VALIDACAO.md`; esta página é a referência atual para a Entrega 4.

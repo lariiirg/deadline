@@ -377,7 +377,7 @@ Estado e limites da validação executada estão em `VALIDACAO.md`.
 
 **Tecnologias da versão revisada:** Expo SDK 58 (58.0.26), React Native 0.88.1, React 19.3.0, React Navigation 7, AsyncStorage, Expo Linking, Node.js/Express 5, MySQL 8, mysql2, bcrypt, JWT e Zod. Playwright e node:test verificam os fluxos. EAS Build é o método preparado para o APK.
 
-A identidade visual e as funcionalidades das entregas anteriores foram preservadas. As mudanças desta etapa estão registradas em `ENTREGA_4.md`; o roteiro está em `APRESENTACAO_ENTREGA_4.md`. O APK ainda depende das etapas de autenticação/build/instalação descritas abaixo. Não confunda `dist-android` com APK.
+A identidade visual e as funcionalidades das entregas anteriores foram preservadas. As mudanças desta etapa estão registradas em `ENTREGA_4.md`; o roteiro está em `APRESENTACAO_ENTREGA_4.md`. O APK foi gerado pelo EAS em 19/11/2026: [baixar versão 1.0.0](https://expo.dev/artifacts/eas/9H-35B1CoZ6l20w30OOMbtlnPIFi2VjPDsYsiuk1PWU.apk). Instalação e testes em aparelho/emulador continuam pendentes. Não confunda `dist-android` com APK.
 
 ## APK Android — mesma rede Wi-Fi
 
@@ -484,6 +484,8 @@ Remove-Item Env:EAS_BUILD_PROFILE,Env:EXPO_PUBLIC_API_URL
 ```
 
 ## Apresentação e limites finais
+
+Sem um celular Android, o APK também pode ser testado em um emulador: instale Android Studio com o Android SDK, crie e inicie um dispositivo virtual pelo Device Manager e, na pasta `app`, execute `npx.cmd eas-cli@latest build:run --platform android --latest` após o build concluir. Mantenha a API ligada e confira no navegador do emulador a URL LAN incorporada no APK. Este ambiente ainda não possui SDK/ADB ou emulador configurado; esses testes não foram executados. Guia oficial: [emulador Android](https://docs.expo.dev/workflow/android-studio-emulator/).
 
 Use `APRESENTACAO_ENTREGA_4.md` para uma demonstração com duas contas, criação de projeto, convite, tarefa atribuída, conclusão, progresso, calendário, perfil e logout. Mostre os testes e explique as regras de acesso no backend. Só demonstre o APK quando ele existir e tiver sido instalado.
 
