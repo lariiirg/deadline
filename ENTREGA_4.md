@@ -24,6 +24,24 @@ A mesma aplicação Deadline foi revisada, sem recriar telas, trocar a navegaç�
 
 ## Resultados realmente executados
 
+### Revalidação final antes do commit — 19/11/2026
+
+A pedido da proprietária, os comandos foram executados novamente depois da geração do APK:
+
+- Backend com MySQL real: **27 testes aprovados**, sem falhas ou testes ignorados.
+- Configuração APK: **3 testes aprovados**.
+- Navegador: **6 cenários aprovados**, incluindo os dois cenários com API/MySQL reais. Em seguida, o cenário de colaboração foi ampliado e passou novamente para verificar a troca real de uma conta pela outra, o clique no perfil do rodapé, os projetos da conta, a edição do perfil persistida no MySQL e a saída pela aba Sair.
+- Expo: dependências compatíveis e **20/20 verificações do Expo Doctor aprovadas**.
+- Bundles web e Android/Hermes recompilados com sucesso. O build web normal foi restaurado após os testes, e a API temporária 3001 foi encerrada; a API 3000 e o serviço MySQL 3307 foram preservados.
+- MySQL **8.0.42**, banco `deadline`, porta **3307**: as cinco tabelas da API usam InnoDB. Leituras de integridade encontraram zero projetos sem criador/convite, zero criadores fora de seus grupos, zero tarefas sem projeto e zero responsáveis fora do grupo. As chaves dos registros existentes foram comparadas antes/depois dos testes: preservadas; os registros temporários foram removidos.
+- `/api/health` respondeu com `database: connected` por localhost e pelo IP LAN a partir deste computador.
+- Auditoria das dependências de execução do backend: **0 vulnerabilidades reportadas**. Revisão dos arquivos candidatos ao commit: nenhum `.env` nem credencial privada atual encontrado.
+- SHA-256 do APK reconferido e igual ao registrado abaixo. O código executável de `app` e `backend` continua igual ao commit `d57b82c`; esta revalidação modifica somente teste de navegador e documentação, sem exigir outro APK.
+
+Não foi encontrada falha funcional nos cenários executados. Isso **não comprova** instalação, teclado, deep linking nativo, persistência ao encerrar o processo Android ou acesso a partir de outro dispositivo: esses itens continuam pendentes, pois não há Android/emulador disponível.
+
+### Matriz consolidada
+
 | Verificação | Resultado | Alcance |
 | --- | --- | --- |
 | API em `http://10.1.134.84:3000/api/health` | Respondeu com banco conectado | Acesso a partir do computador; não comprova acesso do celular. |

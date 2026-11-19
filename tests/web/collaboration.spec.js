@@ -183,6 +183,51 @@ test("real collaboration: invite, login, two sessions, task, progress, access co
     expect(
       await memberAgain.evaluate(() => localStorage.getItem("deadline.token")),
     ).toBeNull();
+    await memberAgain
+      .getByLabel("E-mail", { exact: true })
+      .fill(owner.user.email);
+    await memberAgain
+      .getByLabel("Senha", { exact: true })
+      .fill("Integration-test-123");
+    await memberAgain
+      .getByRole("button", { name: "Entrar", exact: true })
+      .click();
+    await expect(
+      memberAgain.getByText("Projetos recentes", { exact: true }),
+    ).toBeVisible();
+    expect(
+      await memberAgain.evaluate(() => localStorage.getItem("deadline.token")),
+    ).not.toBe(member.token);
+    await memberAgain
+      .getByRole("button", { name: "Meu perfil", exact: true })
+      .click();
+    await expect(
+      memberAgain.getByLabel("Nome completo", { exact: true }),
+    ).toHaveValue(owner.user.name);
+    await expect(
+      memberAgain.getByText(project.name, { exact: true }).last(),
+    ).toBeVisible();
+    await memberAgain
+      .getByLabel("Nome completo", { exact: true })
+      .fill("Equipe owner revisada");
+    await memberAgain
+      .getByRole("button", { name: "Salvar alterações", exact: true })
+      .click();
+    await expect(
+      memberAgain.getByText("Perfil atualizado.", { exact: true }),
+    ).toBeVisible();
+    const [[updatedProfile]] = await pool.execute(
+      "SELECT name FROM users WHERE id=?",
+      [owner.user.id],
+    );
+    expect(updatedProfile.name).toBe("Equipe owner revisada");
+    await memberAgain.getByRole("tab", { name: "Sair", exact: true }).click();
+    await memberAgain
+      .getByRole("button", { name: "Sair e trocar de conta", exact: true })
+      .click();
+    await expect(
+      memberAgain.getByText("Bom ter você por aqui.", { exact: true }),
+    ).toBeVisible();
   } finally {
     for (const context of contexts) await context.close().catch(() => {});
     if (project)
