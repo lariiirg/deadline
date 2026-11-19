@@ -1,5 +1,7 @@
 # Verificação executada — atualização em 12/11/2026
 
+> Para a Entrega 4, consulte [ENTREGA_4.md](ENTREGA_4.md), atualizado em 19/11/2026. Este arquivo preserva o registro histórico das entregas anteriores.
+
 ## Verificações mais recentes
 
 - 25 testes do backend passaram: 24 verificações HTTP/validação e um cenário integrado com MySQL real configurado na porta 3307.

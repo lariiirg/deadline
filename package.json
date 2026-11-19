@@ -5,7 +5,8 @@
   "scripts": {
     "format": "prettier --write \"app/**/*.{js,json,md}\" \"backend/**/*.{js,json}\" \"tests/**/*.js\" \"scripts/*.cjs\" \"*.{js,json,md}\" --ignore-path .gitignore",
     "test:web": "playwright test",
-    "test:api": "npm --prefix backend test"
+    "test:api": "npm --prefix backend test",
+    "test:config": "node --test tests/config/*.test.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",

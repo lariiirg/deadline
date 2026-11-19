@@ -275,6 +275,8 @@ export function Page({ children, refreshControl }) {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: c.bg }}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
       refreshControl={refreshControl}
       contentContainerStyle={[styles.page, width < 650 && { padding: 18 }]}
     >
@@ -334,7 +336,10 @@ export function Dialog({ visible, title, onClose, children }) {
             overflow: "hidden",
           }}
         >
-          <ScrollView contentContainerStyle={{ padding: 24, gap: 18 }}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ padding: 24, gap: 18 }}
+          >
             <View style={[styles.row, { justifyContent: "space-between" }]}>
               <Text style={styles.h2}>{title}</Text>
               <Pressable onPress={onClose} accessibilityLabel="Fechar">

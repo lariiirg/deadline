@@ -71,6 +71,23 @@ test("HTTP: member cannot edit project", async () => {
     .send({ name: "attack" })
     .expect(403);
 });
+
+test("HTTP: signed token with invalid subject is rejected", async () => {
+  for (const subject of ["0", "NaN", "-1", "1.5"]) {
+    const token = jwt.sign({}, process.env.JWT_SECRET, { subject });
+    await api
+      .get("/api/profile")
+      .set("Authorization", "Bearer " + token)
+      .expect(401);
+  }
+});
+
+test("HTTP: registration rejects empty fields", async () => {
+  await api
+    .post("/api/auth/register")
+    .send({ name: "", email: "", password: "" })
+    .expect(400);
+});
 test("HTTP: member cannot delete project", async () => {
   await api
     .delete("/api/projects/1")

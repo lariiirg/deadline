@@ -10,6 +10,10 @@ export function authenticate(req, res, next) {
       jwt.verify(match[1], process.env.JWT_SECRET, { algorithms: ["HS256"] })
         .sub,
     );
+    if (!Number.isSafeInteger(req.userId) || req.userId <= 0)
+      return res
+        .status(401)
+        .json({ message: "Sessão inválida. Entre novamente." });
     next();
   } catch {
     res.status(401).json({ message: "Sessão expirada. Entre novamente." });

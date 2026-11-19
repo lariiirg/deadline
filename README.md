@@ -366,3 +366,125 @@ Antes da entrega, execute os testes, revise os arquivos e faça commit e push no
 O histórico deve refletir alterações realmente realizadas: modelagem/SQL, integração da API, cadastro e hash, login/JWT, middleware, permissões, CRUD, testes e documentação. Não é possível reconstruir a evolução histórica somente com um commit final; preserve o histórico existente, quando houver. Confira no serviço Git se a branch enviada contém os arquivos e commits esperados. A presença de arquivos nesta pasta não comprova push.
 
 Estado e limites da validação executada estão em `VALIDACAO.md`.
+
+## Entrega 4 — finalidade e público
+
+**Problema:** trabalhos escolares em grupo ficam dispersos entre mensagens, prazos e combinações informais; isso dificulta saber quem fará cada etapa e acompanhar a conclusão.
+
+**Objetivo:** reunir projetos, integrantes, tarefas e entregas em um aplicativo com dados reais, sessão autenticada e permissões verificadas no servidor.
+
+**Público-alvo:** estudantes e professores que organizam trabalhos escolares em equipe.
+
+**Tecnologias da versão revisada:** Expo SDK 58 (58.0.26), React Native 0.88.1, React 19.3.0, React Navigation 7, AsyncStorage, Expo Linking, Node.js/Express 5, MySQL 8, mysql2, bcrypt, JWT e Zod. Playwright e node:test verificam os fluxos. EAS Build é o método preparado para o APK.
+
+A identidade visual e as funcionalidades das entregas anteriores foram preservadas. As mudanças desta etapa estão registradas em `ENTREGA_4.md`; o roteiro está em `APRESENTACAO_ENTREGA_4.md`. O APK ainda depende das etapas de autenticação/build/instalação descritas abaixo. Não confunda `dist-android` com APK.
+
+## APK Android — mesma rede Wi-Fi
+
+O perfil `apk-lan` de `app/eas.json` produz **APK de distribuição interna**, sem exigir Expo Go ou Metro para abrir o aplicativo instalado. O backend e o MySQL continuam necessários. O pacote é `com.deadline.school`, versão 1.0.0, versionCode 1. Os ícones PNG preservam o símbolo de ampulheta e as cores do Deadline; o gerador reproduzível está em `scripts/gerar-icones.ps1`. Não havia splash screen personalizada; ela não foi adicionada.
+
+### 1. Conferir a rede e preparar a URL
+
+Na raiz, encontre o IPv4 com `ipconfig`. Computador e celular devem estar na mesma rede e a rede deve permitir comunicação entre clientes. O endereço detectado em 19/11/2026 foi **10.1.134.84**; ele pode mudar.
+
+Com o backend ativo na porta 3000, execute na raiz, substituindo o IP quando necessário:
+
+```powershell
+node scripts/configurar-apk.cjs http://10.1.134.84:3000/api
+```
+
+O script consulta `/health`, grava a URL pública do cliente no perfil `apk-lan` e ajusta somente `APP_URL`/`CORS_ORIGINS` no `backend/.env` privado para que os convites usem o computador da rede. Não altera senha, JWT_SECRET, credenciais ou tabelas. Reinicie a API para aplicar esses links. Para convites web, mantenha o Expo web ativo na porta 8081 e configure o `app/.env` com a mesma URL LAN da API ao usar o navegador de outro dispositivo.
+
+No **navegador do celular**, abra `http://10.1.134.84:3000/api/health`. Deve aparecer `database: connected`. Se não abrir, não adianta gerar o APK: confira a rede, o IPv4, o firewall do Node em rede privada e eventuais bloqueios de comunicação da rede escolar. Mantenha a porta MySQL 3307 restrita ao backend; o celular só precisa da API 3000 e, para os convites web, da página 8081.
+
+O `app.config.js` rejeita URL ausente, localhost, loopback e endereço de emulador nos perfis APK. O plugin oficial `expo-build-properties` permite HTTP **somente no perfil apk-lan**. O perfil `apk` exige HTTPS. Nenhuma senha MySQL ou chave JWT é incluída no aplicativo. A URL EXPO_PUBLIC_API_URL é pública e fica incorporada no bundle; mudar o IP exige novo build.
+
+### 2. Entrar no Expo e vincular o projeto
+
+No terminal da pasta `app`:
+
+```powershell
+npx.cmd eas-cli@latest login
+npx.cmd eas-cli@latest whoami
+npx.cmd eas-cli@latest init
+```
+
+Faça o login diretamente no terminal, sem compartilhar senha ou token. O `init` permite criar/selecionar o projeto da sua conta Expo. Se o EAS indicar que não pode escrever na configuração dinâmica, inclua o **ID real** fornecido pelo comando em `expo.extra.eas.projectId` no `app/app.json`; não use um ID inventado. Preserve os demais campos e confira com `npx.cmd expo config --type public`.
+
+### 3. Gerar o APK
+
+Ainda em `app`:
+
+```powershell
+npx.cmd eas-cli@latest build --platform android --profile apk-lan
+```
+
+O primeiro build pode solicitar criação da chave de assinatura Android; a opção de gerenciamento pelo EAS evita versionar o keystore local. O perfil usa `android.buildType: apk`, não AAB. O EAS precisa de conta autenticada, projeto vinculado e disponibilidade/cota de build. Só considere o APK gerado quando o build terminar com sucesso e oferecer o arquivo `.apk`.
+
+Se o objetivo for publicar a API fora da rede local, primeiro hospede o backend e MySQL com segurança, configure HTTPS, variáveis privadas no servidor e a URL EXPO_PUBLIC_API_URL no ambiente EAS `production`. Depois use o perfil `apk`. Nenhuma hospedagem ou URL pública foi criada nesta entrega.
+
+### 4. Baixar, instalar e comprovar a versão
+
+Abra o link do build concluído no painel Expo, baixe o `.apk` e registre o ID/link e o commit em `ENTREGA_4.md`. Confira que não há alterações locais depois do commit que foi enviado ao build. Registre o SHA-256:
+
+```powershell
+Get-FileHash -Algorithm SHA256 -LiteralPath 'C:\caminho\Deadline.apk'
+```
+
+Transfira o arquivo para o Android ou abra o link de instalação no celular. Autorize instalação para a origem usada, instale e abra Deadline. Com Android SDK/ADB instalado e depuração USB autorizada, a alternativa é `adb install -r C:\caminho\Deadline.apk`. Nunca envie keystores ou senhas ao GitHub. Se já existir um APK assinado por outra chave, a atualização pode ser recusada; não remova o aplicativo sem considerar que os dados locais da sessão serão apagados.
+
+Siga o checklist Android em `ENTREGA_4.md` e preencha modelo, versão do Android e resultados. Bundle compilado e layout móvel no Edge **não comprovam instalação ou funcionamento nativo**.
+
+Documentação oficial consultada: [APK no EAS](https://docs.expo.dev/build-reference/apk/), [primeiro build](https://docs.expo.dev/build/setup/), [variáveis de ambiente](https://docs.expo.dev/eas/environment-variables/), [BuildProperties SDK 58](https://docs.expo.dev/versions/v58.0.0/sdk/build-properties/).
+
+## Repetir os testes da Entrega 4
+
+Na raiz:
+
+```powershell
+npm.cmd run test:config
+$env:RUN_DB_TESTS='1'
+npm.cmd run test:api
+Remove-Item Env:RUN_DB_TESTS
+```
+
+Os testes reais criam usuários/projetos temporários e removem somente os registros criados por eles. Não use testes destrutivos no banco real.
+
+Para repetir os seis testes de navegador com API real sem parar a API de desenvolvimento, use um terminal temporário na raiz:
+
+```powershell
+$env:PORT='3001'
+$env:CORS_ORIGINS='http://127.0.0.1:8099'
+$env:APP_URL='http://127.0.0.1:8099'
+node backend/server.js
+```
+
+Em outro terminal na raiz, compile o cliente de teste para essa API:
+
+```powershell
+$env:EXPO_PUBLIC_API_URL='http://127.0.0.1:3001/api'
+npm.cmd --prefix app run build:web
+$env:RUN_DB_BROWSER='1'
+$env:TEST_API_URL='http://127.0.0.1:3001/api'
+npm.cmd run test:web
+Remove-Item Env:EXPO_PUBLIC_API_URL,Env:RUN_DB_BROWSER,Env:TEST_API_URL
+```
+
+Depois encerre o servidor temporário com Ctrl+C. Os testes usam MySQL configurado no backend, conferem persistência e limpam seus registros. As portas 3000/3307 de desenvolvimento são preservadas. Sem `RUN_DB_BROWSER=1`, os dois testes reais do navegador ficam ignorados; isso não significa que passaram. O executor isolado antigo continua disponível e usa a própria instância MySQL.
+
+Para validar a configuração nativa e o bundle (em `app`):
+
+```powershell
+npx.cmd expo install --check
+npx.cmd expo-doctor@latest
+$env:EAS_BUILD_PROFILE='apk-lan'
+$env:EXPO_PUBLIC_API_URL='http://10.1.134.84:3000/api'
+npx.cmd expo export --platform android --output-dir dist-android
+Remove-Item Env:EAS_BUILD_PROFILE,Env:EXPO_PUBLIC_API_URL
+```
+
+## Apresentação e limites finais
+
+Use `APRESENTACAO_ENTREGA_4.md` para uma demonstração com duas contas, criação de projeto, convite, tarefa atribuída, conclusão, progresso, calendário, perfil e logout. Mostre os testes e explique as regras de acesso no backend. Só demonstre o APK quando ele existir e tiver sido instalado.
+
+Limites conhecidos: perfil LAN depende de IP/rede/servidor ligado; não há revogação de JWT no logout; o nível professor é escolhido no cadastro acadêmico; mudanças coletivas aparecem ao recarregar/reabrir a tela, sem WebSocket; links HTTPS não possuem associação automática Android; testes físicos e build EAS dependem das etapas indicadas no checklist. A auditoria do app encontrou três ocorrências moderadas na cadeia Expo/fingerprint/minimatch, sem alta ou crítica; não foi feito downgrade forçado do SDK para resolver ferramentas transitivas.
