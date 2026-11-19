@@ -24,6 +24,15 @@
         "backgroundColor": "#F7F8FA"
       }
     },
-    "plugins": ["expo-status-bar", "expo-font"]
+    "plugins": [
+      "expo-status-bar",
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "26b7f765-eefa-49f1-8a50-ea2c13d66904"
+      }
+    },
+    "owner": "lariigewehr"
   }
 }
